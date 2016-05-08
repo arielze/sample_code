@@ -1,0 +1,75 @@
+{
+  "filter": {
+    "and": [
+      {
+        "term": {
+          "short_country_code": "US"
+        }
+      },
+      {
+        "has_child": {
+          "type": "events",
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "api_key": "GI38317913"
+                  }
+                },
+                {
+                  "terms": {
+                    "event_name": [
+                      "Swipe Distance",
+                      "Emojie Used"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "aggs": {
+    "devices": {
+      "terms": {
+        "field": "device_id",
+        "order": {
+          "total_swipe": "desc"
+        }
+      },
+      "aggs": {
+        "total_swipe": {
+          "filter": {
+            "term": {
+              "event_name": "Swipe Distance"
+            }
+          },
+          "aggs": {
+            "ts": {
+              "sum": {
+                "field": "events.numeric_value"
+              }
+            }
+          }
+        },
+        "total_emogies": {
+          "filter": {
+            "term": {
+              "event_name": "Emojie Used"
+            }
+          },
+          "aggs": {
+            "te": {
+              "sum": {
+                "field": "events.numeric_value"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

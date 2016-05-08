@@ -1,0 +1,98 @@
+{
+  "aggs": {
+    "top": {
+      "filter": {
+        "and": [
+          {
+            "regexp": {
+              "properties.app_package_name": ".*gingersoftware.*"
+            }
+          }
+        ]
+      },
+      "aggs": {
+        "devices": {
+          "terms": {
+            "field": "properties.device_id",
+            "size": 1000
+          },
+          "aggs": {
+            "events_top": {
+              "children": {
+                "type": "events"
+              },
+              "aggs": {
+                "events_top_filter": {
+                  "filter": {
+                    "and": [
+                      {
+                        "terms": {
+                          "event_name": [
+                            "Emojie Used",
+                            "Swipe Distance"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "aggs": {
+                    "total_emojies": {
+                      "filter": {
+                        "and": [
+                          {
+                            "term": {
+                              "event_name": "Emojie Used"
+                            }
+                          },
+                          {
+                            "range": {
+                              "event_date": {
+                                "lte": "2015-05-15"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "aggs": {
+                        "count_emogies": {
+                          "value_count": {
+                            "field": "events.event_name"
+                          }
+                        }
+                      }
+                    },
+                    "total_swipe": {
+                      "filter": {
+                        "and": [
+                          {
+                            "term": {
+                              "event_name": "Swipe Distance"
+                            }
+                          },
+                          {
+                            "range": {
+                              "event_date": {
+                                "lte": "2015-05-15"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "aggs": {
+                        "sum_swipe": {
+                          "sum": {
+                            "field": "events.numeric_value"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

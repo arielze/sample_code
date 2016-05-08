@@ -1,0 +1,23 @@
+{
+  "aggs": {
+    "top": {
+      "filter": {
+        "and": [
+          {
+            "regexp": {
+              "properties.app_package_name": ".*gingersoftware.*"
+            }
+          }
+        ]
+      },
+      "aggs": {
+        "devices": {
+          "terms": {
+            "script": "doc['short_country_code'].value+'-' + doc['device_id'].value",
+            "size": 1000
+          }
+        }
+      }
+    }
+  }
+}

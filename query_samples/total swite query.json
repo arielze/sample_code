@@ -1,0 +1,40 @@
+{
+  "filter": {
+    "has_child": {
+      "type": "events",
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "term": {
+                "api_key": "GI38317913"
+              }
+            },
+            {
+              "term": {
+                "event_name": "Swipe Distance"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "aggs": {
+    "devices": {
+      "terms": {
+        "field": "device_id",
+        "order": {
+          "total_swipe": "desc"
+        }
+      },
+      "aggs": {
+        "total_swipe": {
+          "sum": {
+            "field": "events.numeric_value"
+          }
+        }
+      }
+    }
+  }
+}

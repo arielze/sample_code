@@ -1,0 +1,32 @@
+defaults: &default
+  redis: redis.<%= Env.env %>.sampleserver.com
+  api_server: api-server.<%= Env.env %>.sampleserver.com 
+  log:
+    name: es_query_executer
+    token: 1234-abcd
+
+  elasticsearch:
+    hosts: 
+      - elasticsearch.<%= Env.env %>.sampleserver.com
+
+development: &development
+  <<: *default
+  redis: 127.0.0.1
+  api_server: api-server.staging.sampleserver.com 
+  elasticsearch:
+    hosts: 
+      - 127.0.0.1
+
+test:
+  <<: *development
+
+
+production: &production
+  <<: *default
+
+
+staging: &staging
+  <<: *default
+
+automation: &automation
+  <<: *default
